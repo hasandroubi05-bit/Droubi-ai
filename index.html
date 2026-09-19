@@ -1,145 +1,148 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="manifest.json">
-  <title>Droubi AI</title>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #101114;
-  color: white;
-}
-
-header {
-  padding: 18px;
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  border-bottom: 1px solid #292b31;
-}
-
-.chat {
-  height: calc(100vh - 140px);
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.welcome {
-  text-align: center;
-  margin-top: 80px;
-}
-
-.welcome h1 {
-  font-size: 30px;
-}
-
-.welcome p {
-  color: #aaa;
-}
-
-.message {
-  margin: 12px 0;
-  padding: 13px 16px;
-  border-radius: 16px;
-  max-width: 85%;
-  line-height: 1.6;
-}
-
-.user {
-  background: #315efb;
-  margin-right: auto;
-}
-
-.ai {
-  background: #24262c;
-  margin-left: auto;
-}
-
-.bottom {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  padding: 12px;
-  background: #101114;
-  display: flex;
-  gap: 8px;
-}
-
-input {
-  flex: 1;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid #444;
-  background: #1d1f24;
-  color: white;
-  font-size: 16px;
-}
-
-button {
-  border: none;
-  border-radius: 12px;
-  padding: 0 20px;
-  background: #315efb;
-  color: white;
-  font-size: 16px;
-}
-
-button:active {
-  transform: scale(.97);
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Droubi AI</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#101114">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #101114;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        header {
+            text-align: center;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            background: #18191e;
+            border-bottom: 1px solid #2a2b32;
+        }
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background-color: #2563eb;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .ai-message {
+            background-color: #26272f;
+            color: #e5e7eb;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        #input-container {
+            display: flex;
+            padding: 12px;
+            background-color: #18191e;
+            border-top: 1px solid #2a2b32;
+            gap: 10px;
+        }
+        #user-input {
+            flex: 1;
+            background-color: #26272f;
+            border: 1px solid #3f404a;
+            border-radius: 8px;
+            padding: 12px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+        #user-input:focus {
+            border-color: #2563eb;
+        }
+        #send-btn {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 20px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #send-btn:active {
+            background-color: #1d4ed8;
+        }
+    </style>
 </head>
-
 <body>
 
-<header>🤖 Droubi AI</header>
+    <header>Droubi AI 🤖</header>
 
-<div class="chat" id="chat">
-  <div class="welcome">
-    <h1>مرحباً بك في Droubi AI</h1>
-    <p>اكتب سؤالك بالأسفل</p>
-  </div>
-</div>
+    <div id="chat-container">
+        <div class="message ai-message">أهلاً بك! أنا Droubi AI، كيف يمكنني مساعدتك اليوم؟</div>
+    </div>
 
-<div class="bottom">
-  <input id="input" placeholder="اكتب سؤالك هنا..." />
-  <button onclick="sendMessage()">إرسال</button>
-</div>
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="اكتب سؤالك هنا...">
+        <button id="send-btn" onclick="sendMessage()">إرسال</button>
+    </div>
 
-<script>
-function sendMessage() {
-  const input = document.getElementById("input");
-  const chat = document.getElementById("chat");
-  const text = input.value.trim();
+    <script>
+        async function sendMessage() {
+            const inputField = document.getElementById('user-input');
+            const chatContainer = document.getElementById('chat-container');
+            const prompt = inputField.value.trim();
 
-  if (!text) return;
+            if (!prompt) return;
 
-  document.querySelector(".welcome")?.remove();
+            // إضافة رسالة المستخدم للشات
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'message user-message';
+            userMsgDiv.textContent = prompt;
+            chatContainer.appendChild(userMsgDiv);
 
-  const userMessage = document.createElement("div");
-  userMessage.className = "message user";
-  userMessage.textContent = text;
-  chat.appendChild(userMessage);
+            inputField.value = '';
+            chatContainer.scrollTop = chatContainer.scrollHeight;
 
-  input.value = "";
+            // رسالة الانتظار من الذكاء الاصطناعي
+            const aiMsgDiv = document.createElement('div');
+            aiMsgDiv.className = 'message ai-message';
+            aiMsgDiv.textContent = 'جاري التفكير...';
+            chatContainer.appendChild(aiMsgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
 
-  const aiMessage = document.createElement("div");
-  aiMessage.className = "message ai";
-  aiMessage.textContent =
-    "أنا Droubi AI. تم استلام رسالتك. سنربطني الآن بنموذج ذكاء اصطناعي حتى أقدر أجاوبك فعلياً.";
-  chat.appendChild(aiMessage);
+            try {
+                const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+                const reply = await response.text();
+                aiMsgDiv.textContent = reply;
+            } catch (error) {
+                aiMsgDiv.textContent = 'عذراً، حدث خطأ في الاتصال بالذكاء الاصطناعي.';
+            }
 
-  chat.scrollTop = chat.scrollHeight;
-}
-</script>
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
 
+        // دعم الإرسال بزر Enter في الكيبورد
+        document.getElementById('user-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
 </body>
-  </html>
+</html>
