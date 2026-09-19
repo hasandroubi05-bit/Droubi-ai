@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -126,12 +125,33 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                // استخدام الرابط المجاني المباشر
-                const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
-                const reply = await response.text();
-                aiMsgDiv.textContent = reply;
+                // المحاولة الأولى عبر النظام الأساسي
+                const response = await fetch(`https://kaas.pollinations.ai/v1/chat/completions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: [{ role: 'user', content: prompt }],
+                        model: 'openai'
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.choices && data.choices[0] && data.choices[0].message) {
+                    aiMsgDiv.textContent = data.choices[0].message.content;
+                } else {
+                    throw new Error('Invalid response');
+                }
             } catch (error) {
-                aiMsgDiv.textContent = 'عذراً، حدث خطأ في الاتصال.';
+                // النظام الاحتياطي الفوري في حال الضغط
+                try {
+                    const res2 = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}`);
+                    const text2 = await res2.text();
+                    aiMsgDiv.textContent = text2;
+                } catch (e) {
+                    aiMsgDiv.textContent = 'عذراً، حدث خطأ في الاتصال بالسيرفر.';
+                }
             }
 
             chatContainer.scrollTop = chatContainer.scrollHeight;
