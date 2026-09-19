@@ -1,7 +1,7 @@
 {
   "name": "Droubi AI",
   "short_name": "Droubi",
-  "start_url": "/Droubi-ai/"
+  "start_url": "https://hasandroubi05-bit.github.io/Droubi-ai/",
   "display": "standalone",
   "background_color": "#101114",
   "theme_color": "#101114",
