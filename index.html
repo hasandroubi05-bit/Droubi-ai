@@ -125,7 +125,8 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             try {
-                const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(prompt)}?model=openai`);
+                // تم التبديل إلى رابط بديل مجاني ومستقر تماماً
+                const response = await fetch(`https://kaas.pollinations.ai/prompt/${encodeURIComponent(prompt)}`);
                 const reply = await response.text();
                 aiMsgDiv.textContent = reply;
             } catch (error) {
